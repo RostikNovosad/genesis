@@ -15,21 +15,19 @@ When a user provides an analytical or market research query, follow these steps 
 
 Translate the user's raw topic query into exact target Wikipedia article titles for each requested language using Wikidata mapping.
 
+When searching for broad domain concepts (e.g., Astronomy, Finance), search using the primary English topic name first to accurately retrieve the high-level Wikidata QID, then map to target languages.
+
 `python wiki-market-research/scripts/search_topics.py --query "<User Topic>" --languages uk,pl,cs,en`
 
 _Output: JSON mapping query terms to exact Wikipedia article titles in each target language via Wikidata QID._
 
 ### Step 2: Fetch Traffic & Compute Metrics
 
-Fetch pageview data for the resolved articles over the target timeframe (e.g., `--days 30` or custom timeframe).
+Fetch pageview data for the resolved articles over the target timeframe (e.g., `--days 30`).
 
 `python wiki-market-research/scripts/fetch_analytics.py --articles "<lang1:Title1,lang2:Title2>" --days 30 --output wiki-market-research/analytics.json`
 
-_This script automatically calculates:_
-
-- _Total views & Daily Average views._
-- _Max & Min daily view spikes._
-- _Saves dataset to `wiki-market-research/analytics.json`._
+This script automatically calculates metrics and saves the output JSON. Always read the generated `analytics.json` file to extract exact numbers (total_views, daily_average, max/min spikes) for your report.
 
 ### Step 3: Generate Visual Charts
 
