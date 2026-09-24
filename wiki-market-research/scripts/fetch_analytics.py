@@ -11,6 +11,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from pathlib import Path
 from typing import Any, Dict, List
 
 USER_AGENT = "WikiMarketAnalystBot/1.0 (https://github.com/example/wiki-market-analyst; )"
@@ -57,7 +58,7 @@ def resolve_redirect_title(lang: str, article_title: str) -> str:
                 return redirects[0].get("to", article_title)
             return page_info.get("title", article_title)
 
-    # Якщо сторінки немає, шукаємо ТОЧНУ фразу в лапках
+    # Якщо сторінки немає, шукаємо ТОЧНУ фразу
     exact_query = urllib.parse.quote(f'"{article_title}"')
     search_url = f"https://{lang}.wikipedia.org/w/api.php?action=query&list=search&srsearch={exact_query}&format=json&utf8=1"
     search_data = fetch_json(search_url)
@@ -69,11 +70,10 @@ def resolve_redirect_title(lang: str, article_title: str) -> str:
         return matched_title
 
     return article_title
+
+
 def fetch_daily_pageviews(lang: str, article_title: str, start_date: str, end_date: str) -> List[Dict[str, Any]]:
-    """
-    Fetch daily pageviews for a single article using Wikimedia REST API.
-    Resolves redirects and replaces spaces with underscores.
-    """
+    """Fetch daily pageviews for a single article using Wikimedia REST API."""
     canonical_title = resolve_redirect_title(lang, article_title)
     formatted_title = canonical_title.replace(" ", "_")
     encoded_title = urllib.parse.quote(formatted_title, safe="")
@@ -117,9 +117,10 @@ def main():
     parser.add_argument(
         "--articles",
         required=True,
-        help="Comma-separated articles in 'lang:Title' format (e.g. 'uk:Інтервальне голодування,pl:Post przerywany')",
+        help="Comma-separated articles in 'lang:Title' format (e.g. 'uk:Інтервальне голодування,pl:Głodówka')",
     )
     parser.add_argument("--days", type=int, default=30, help="Number of days to look back (default: 30)")
+    parser.add_argument("--output", "-o", help="Path to output JSON file (e.g. 'wiki-market-research/analytics.json')")
 
     args = parser.parse_args()
 
@@ -154,7 +155,15 @@ def main():
             "daily_views": daily_data,
         }
 
-    print(json.dumps(results, indent=2, ensure_ascii=False))
+    json_data = json.dumps(results, indent=2, ensure_ascii=False)
+
+    if args.output:
+        out_path = Path(args.output)
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json_data, encoding="utf-8")
+        print(f"✓ Analytics data successfully saved to: {out_path}")
+    else:
+        print(json_data)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,10 @@ env/
 wiki-market-research/assets/charts/*.png
 !wiki-market-research/assets/charts/.gitkeep
 
+# Динамічні аналітичні дані та графіки
+wiki-market-research/analytics.json
+wiki-market-research/charts/
+
 # PDF Reports
 *.pdf
 
