@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE & OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Generated output assets (Keep directory structure via .gitkeep)
+wiki-market-research/assets/charts/*.png
+!wiki-market-research/assets/charts/.gitkeep
+
+# PDF Reports
+*.pdf
+
+# Temporary files
+*.tmp
+*.log
