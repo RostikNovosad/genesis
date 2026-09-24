@@ -70,15 +70,20 @@ def get_sitelinks_from_wikidata(qid: str, target_languages: List[str]) -> Dict[s
     return mapped_titles
 
 
-def resolve_topic_mapping(query: str, target_languages: List[str], base_lang: str = "en") -> dict:
+def resolve_topic_mapping(query: str, target_languages: List[str], base_lang: Optional[str] = None) -> dict:
     """Main function to search, resolve QID, and map topic across all target languages."""
-    # 1. First try searching in base_lang (default 'en')
-    primary_lang = base_lang
+
+    # 1. Якщо base_lang не вказано явно, беремо першу мову зі списку target_languages
+    # Це дозволяє шукати українською, якщо користувач передав --languages "uk,pl,en"
+    primary_lang = base_lang if base_lang else target_languages[0]
+
     matched_title = search_wikipedia(query, primary_lang)
 
-    # 2. Fallback to searching in target_languages if base_lang gave no results
+    # 2. Якщо мовою primary_lang нічого не знайдено, пробуємо пошук по всіх інших мовах зі списку
     if not matched_title:
         for lang in target_languages:
+            if lang == primary_lang:
+                continue
             matched_title = search_wikipedia(query, lang)
             if matched_title:
                 primary_lang = lang
@@ -91,7 +96,7 @@ def resolve_topic_mapping(query: str, target_languages: List[str], base_lang: st
             "message": f"No matching Wikipedia article found for '{query}'"
         }
 
-    # 3. Get Wikidata QID
+    # 3. Отримуємо універсальний Wikidata QID
     qid = get_wikidata_id(matched_title, primary_lang)
 
     if not qid:
@@ -102,10 +107,10 @@ def resolve_topic_mapping(query: str, target_languages: List[str], base_lang: st
             "message": "Found Wikipedia page but could not map to Wikidata item."
         }
 
-    # 4. Fetch sitelinks for requested target languages
+    # 4. Отримуємо міжмовні посилання для всіх потрібних мов за цим QID
     sitelinks = get_sitelinks_from_wikidata(qid, target_languages)
 
-    # Ensure primary search article is included if target language matches
+    # Переконуємося, що первинна стаття збережена у результатах
     if primary_lang in target_languages and primary_lang not in sitelinks:
         sitelinks[primary_lang] = matched_title
 
@@ -117,7 +122,6 @@ def resolve_topic_mapping(query: str, target_languages: List[str], base_lang: st
         "mapped_articles": sitelinks,
         "formatted_articles_param": ",".join([f"{lang}:{title}" for lang, title in sitelinks.items()])
     }
-
 
 def main():
     parser = argparse.ArgumentParser(description="Map search terms to Wikipedia article titles in target languages.")
