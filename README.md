@@ -1,8 +1,8 @@
-# Wiki Market Research: Аналіз попиту на тему «Інтервальне голодування»
+# Wiki Market Research: Універсальний інструмент аналізу ринкового попиту
 
-Проект призначений для аналізу органічного інтересу та порівняння попиту на тему **Intermittent Fasting (Інтервальне голодування)** у трьох мовних сегментах Вікіпедії (**EN**, **UK**, **PL**) за 30 днів.
+Автоматизований аналітичний інструмент та AI-Skill для оцінки, порівняння та валідації ринкового інтересу (B2C/B2B продуктів, освітніх курсів, фіч) у різних мовних регіонах на основі динаміки трафіку Вікіпедії.
 
-Датасет формується автоматично через **Wikimedia REST API** та **MediaWiki Action API**.
+## Дані збираються та мапляться автоматично через **Wikimedia REST API** та **Wikidata Action API**.
 
 ---
 
@@ -30,7 +30,3 @@ wiki-market-research/
 - [Wikimedia REST API (Pageviews Metrics)](https://wikimedia.org/api/rest_v1/)
 - [MediaWiki Action API (Redirects & Search)](https://www.mediawiki.org/wiki/API:Main_page)
 - [Wikimedia User-Agent Policy](https://meta.wikimedia.org/wiki/User-Agent_policy)
-
-```
-
-```
