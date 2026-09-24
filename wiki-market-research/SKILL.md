@@ -1,6 +1,6 @@
 ---
 name: wiki-market-research
-description: Analyze Wikipedia pageviews to help B2C product founders validate market interest across topics and languages. Generates data-driven charts and 1-page PDF reports.
+description: Analyze Wikipedia pageviews to help B2C product founders validate market interest across topics and languages. Generates data-driven charts and structured JSON reports.
 ---
 
 # Wikipedia Market Research Skill
@@ -21,34 +21,31 @@ _Output: JSON mapping query terms to exact Wikipedia article titles in each lang
 
 ### Step 2: Fetch Traffic & Compute Metrics
 
-Fetch pageviews data for the resolved articles over the target timeframe (default: 24 months).
+Fetch pageviews data for the resolved articles over the target timeframe (default: 30 days).
 
-`python wiki-market-research/scripts/fetch_analytics.py --articles "uk:Астрономія,pl:Astronomia" --months 24`
+`python wiki-market-research/scripts/fetch_analytics.py --articles "uk:Астрономія,pl:Astronomia" --days 30 --output wiki-market-research/analytics.json`
 
 _This script automatically calculates:_
 
-- _Total views & Average views._
-- _CAGR / Growth %._
-- _Volatility & Anomaly Spikes._
-- _Confidence Score (0-100%)._
-  _And saves generated comparison charts to `wiki-market-research/assets/charts/`._
+- _Total views & Daily Average views._
+- _Max & Min daily view spikes._
+- _Saves dataset to `wiki-market-research/analytics.json`._
 
-### Step 3: Interpret Results
+### Step 3: Generate Visual Charts
 
-Analyze the JSON output from `fetch_analytics.py` and provide actionable business insights:
+Generate trend and comparison charts using matplotlib and pandas.
 
-- **High growth + High confidence (>70%)**: Strong long-term market opportunity.
-- **High growth + Low confidence (<40%)**: Viral news spike/hype; temporary trend, proceed with caution.
-- **Negative growth**: Declining interest in the market.
+`python wiki-market-research/scripts/generate_charts.py --input wiki-market-research/analytics.json --output-dir wiki-market-research/charts`
 
-### Step 4: Generate Report (If Requested)
+### Step 4: Interpret Results
 
-If the user explicitly asks for a shareable report, executive summary, or a single-page PDF:
+Analyze the generated data and provide actionable business insights:
 
-`python wiki-market-research/scripts/generate_pdf.py --input_data "path/to/analytics_result.json" --chart "path/to/chart.png" --summary "Agent key takeaway insights" --output "report.pdf"`
+- **High volume + Stable trend**: Strong established market demand.
+- **Low volume**: Niche interest or potential naming mismatch in the target region.
 
 ## Guidelines for Low-Cost Models
 
-- **Do NOT calculate math manually.** Always rely on `fetch_analytics.py` for statistics, CAGR, and scores.
-- **Keep responses structured.** Provide a direct recommendation first, followed by key metrics and risk limitations.
-- Read `wiki-market-research/references/metrics_guide.md` if you need to explain how metrics like Confidence Score were derived.
+- **Do NOT calculate math manually.** Always rely on `fetch_analytics.py` for statistics and averages.
+- **Keep responses structured.** Provide a direct recommendation first, followed by key metrics and charts.
+  а

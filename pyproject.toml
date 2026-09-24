@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wiki-market-research"
+version = "0.1.0"
+description = "Аналіз органічного попиту на теми у Вікіпедії через Wikimedia API"
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
+]
+
+[project.scripts]
+fetch-analytics = "wiki_market_research.scripts.fetch_analytics:main"
+generate-charts = "wiki_market_research.scripts.generate_charts:main"
